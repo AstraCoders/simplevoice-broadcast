@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.lucasmellof.broadcastvoice.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "broadcastvoice.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
