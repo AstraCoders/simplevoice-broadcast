@@ -1,0 +1,33 @@
+{
+    "schemaVersion": 1,
+    "id": "${mod_id}",
+    "version": "${version}",
+    "name": "${mod_name}",
+    "description": "${description}",
+    "authors": [
+        "${mod_author}"
+    ],
+    "contact": {
+        "homepage": "https://github.com/lucasmellof/simple-voice-broadcast",
+        "sources": "https://github.com/lucasmellof/simple-voice-broadcast"
+    },
+    "license": "${license}",
+    "icon": "${mod_id}.png",
+    "environment": "server",
+    "entrypoints": {
+        "main": [
+            "com.lucasmellof.broadcastvoice.BroadcastVoice"
+        ],
+        "voicechat": [
+            "com.lucasmellof.broadcastvoice.FabricBroadcastVoicePlugin"
+        ]
+    },
+    "depends": {
+        "fabricloader": ">=${fabric_loader_version}",
+        "fabric-api": "*",
+        "minecraft": "${minecraft_version}",
+        "java": ">=${java_version}",
+        "voicechat": "*"
+    }
+}
+  

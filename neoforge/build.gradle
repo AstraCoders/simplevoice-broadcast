@@ -1,0 +1,91 @@
+plugins {
+    id 'multiloader-loader'
+    id 'net.neoforged.moddev'
+    id 'variables'
+    id 'net.darkhax.curseforgegradle'
+    id 'com.modrinth.minotaur'
+}
+
+repositories {
+    maven {
+        name = "CurseForge"
+        url = "https://cursemaven.com"
+    }
+    maven { url = 'https://maven.maxhenkel.de/repository/public' }
+}
+
+dependencies {
+    // Simple Voice Chat
+    runtimeOnly "curse.maven:simple-voice-chat-416089:7361244"
+    implementation "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
+}
+
+neoForge {
+    version = neoforge_version
+    // Automatically enable neoforge AccessTransformers if the file exists
+    def at = project(':common').file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformers.from(at.absolutePath)
+    }
+    parchment {
+        minecraftVersion = parchment_minecraft
+        mappingsVersion = parchment_version
+    }
+    runs {
+        configureEach {
+            systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
+            ideName = "NeoForge ${it.name.capitalize()} (${project.path})" // Unify the run config names with fabric
+        }
+        client {
+            client()
+        }
+        data {
+            data()
+
+            // DataGen can be run by - "./gradlew :neoforge:runData" in Terminal.
+            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+
+        }
+        server {
+            server()
+        }
+    }
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+
+tasks.register('publishCurseForge', net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+    dependsOn(tasks.jar)
+    apiToken = secrets.curseforgeKey
+    group = 'publishing'
+    def mainFile = upload(curseforge_project_id, jar)
+    mainFile.releaseType = "release"
+    mainFile.changelogType = "text"
+    mainFile.changelog = rootProject.ext.mod_changelog
+    mainFile.addGameVersion(minecraft_version)
+    mainFile.addModLoader("NeoForge")
+
+    mainFile.addRequirement("simple-voice-chat")
+}
+
+modrinth {
+    token = secrets.modrinthKey
+    projectId = "${modrinth_project_id}"
+    versionNumber = project.minecraft_version + '-' + project.version
+    versionName = "${project.version} for NeoForge ${project.minecraft_version}"
+    versionType = "release"
+    uploadFile = jar
+    gameVersions = [ project.minecraft_version ]
+    changelog = provider { rootProject.ext.mod_changelog }
+    loaders = ["neoforge"]
+    dependencies {
+        required.project "simple-voice-chat"
+    }
+}

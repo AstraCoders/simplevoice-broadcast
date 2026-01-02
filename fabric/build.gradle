@@ -1,0 +1,80 @@
+plugins {
+    id 'multiloader-loader'
+    id 'fabric-loom'
+    id 'variables'
+    id 'net.darkhax.curseforgegradle'
+    id 'com.modrinth.minotaur'
+}
+
+repositories {
+    maven {
+        name = "CurseForge"
+        url = "https://cursemaven.com"
+    }
+    maven { url = 'https://maven.maxhenkel.de/repository/public' }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip")
+    }
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+
+    // Simple Voice Chat
+    modImplementation "curse.maven:simple-voice-chat-416089:7361250"
+    implementation "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
+}
+
+loom {
+    def aw = project(':common').file("src/main/resources/${mod_id}.accesswidener")
+    if (aw.exists()) {
+        accessWidenerPath.set(aw)
+    }
+    runs {
+        client {
+            client()
+            setConfigName('Fabric Client')
+            ideConfigGenerated(true)
+            runDir('runs/client')
+        }
+        server {
+            server()
+            setConfigName('Fabric Server')
+            ideConfigGenerated(true)
+            runDir('runs/server')
+        }
+    }
+}
+
+
+tasks.register('publishCurseForge', net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+    dependsOn(tasks.jar)
+    apiToken = secrets.curseforgeKey
+    group = 'publishing'
+    def mainFile = upload(curseforge_project_id, jar)
+    mainFile.releaseType = "release"
+    mainFile.changelogType = "text"
+    mainFile.changelog = rootProject.ext.mod_changelog
+    mainFile.addGameVersion(minecraft_version)
+    mainFile.addModLoader("fabric")
+
+    mainFile.addRequirement("simple-voice-chat")
+}
+
+modrinth {
+    token = secrets.modrinthKey
+    projectId = "${modrinth_project_id}"
+    versionNumber = project.minecraft_version + '-' + project.version
+    versionName = "${project.version} for Fabric ${project.minecraft_version}"
+    versionType = "release"
+    uploadFile = jar
+    gameVersions = [ project.minecraft_version ]
+    changelog = provider { rootProject.ext.mod_changelog }
+    loaders = ["fabric"]
+    dependencies {
+        required.project "simple-voice-chat"
+    }
+}
