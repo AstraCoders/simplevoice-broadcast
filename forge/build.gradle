@@ -51,7 +51,7 @@ dependencies {
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 
     // Simple Voice Chat
-    implementation ("curse.maven:simple-voice-chat-416089:7361241")
+    implementation ("curse.maven:simple-voice-chat-416089:8037691")
     implementation "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
 }
 

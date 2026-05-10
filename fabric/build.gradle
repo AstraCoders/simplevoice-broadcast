@@ -24,7 +24,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
     // Simple Voice Chat
-    modImplementation "curse.maven:simple-voice-chat-416089:7361250"
+    modImplementation "curse.maven:simple-voice-chat-416089:8037696"
     implementation "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
 }
 
