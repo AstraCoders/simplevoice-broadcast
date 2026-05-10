@@ -16,7 +16,7 @@ repositories {
 
 dependencies {
     // Simple Voice Chat
-    runtimeOnly "curse.maven:simple-voice-chat-416089:8037694"
+    runtimeOnly "curse.maven:simple-voice-chat-416089:${voicechat_runtime_neoforge}"
     implementation "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
 }
 
