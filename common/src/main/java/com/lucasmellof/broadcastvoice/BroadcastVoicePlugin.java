@@ -9,7 +9,10 @@ import de.maxhenkel.voicechat.api.events.EventRegistration;
 import de.maxhenkel.voicechat.api.events.MicrophonePacketEvent;
 import de.maxhenkel.voicechat.api.packets.StaticSoundPacket;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.commands.OpCommand;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permission;
+import net.minecraft.server.permissions.PermissionLevel;
 import net.minecraft.server.players.PlayerList;
 
 public class BroadcastVoicePlugin implements VoicechatPlugin {
@@ -34,7 +37,7 @@ public class BroadcastVoicePlugin implements VoicechatPlugin {
         Group group = event.getSenderConnection().getGroup();
         if (group == null) return;
 
-        if (!player.hasPermissions(Services.PLATFORM.getPermissionLevel())) return;
+        if (!player.permissions().hasPermission(new Permission.HasCommandLevel(PermissionLevel.byId(Services.PLATFORM.getPermissionLevel())))) return;
         if (!group.getName().strip().equals(Services.PLATFORM.getBroadcastGroupName())) return;
 
         // We want to cancel the event so that the packet doesn't get sent to the other players
