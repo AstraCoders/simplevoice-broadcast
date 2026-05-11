@@ -41,7 +41,7 @@ public class BroadcastVoicePlugin implements VoicechatPlugin {
         event.cancel();
 
         VoicechatServerApi api = event.getVoicechat();
-        MinecraftServer server = player.getServer();
+        MinecraftServer server = player.level().getServer();
 
         if (server == null) {
             return;
