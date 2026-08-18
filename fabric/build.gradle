@@ -51,10 +51,13 @@ loom {
 
 
 tasks.register('publishCurseForge', net.darkhax.curseforgegradle.TaskPublishCurseForge) {
-    dependsOn(tasks.jar)
+    // `jar` is the development artifact and retains named Minecraft classes.
+    // Publish Loom's remapped artifact so Fabric can resolve Minecraft classes
+    // in a production server.
+    dependsOn(tasks.remapJar)
     apiToken = secrets.curseforgeKey
     group = 'publishing'
-    def mainFile = upload(curseforge_project_id, jar)
+    def mainFile = upload(curseforge_project_id, remapJar)
     mainFile.releaseType = "release"
     mainFile.changelogType = "text"
     mainFile.changelog = rootProject.ext.mod_changelog
@@ -70,7 +73,7 @@ modrinth {
     versionNumber = project.minecraft_version + '-' + project.version
     versionName = "${project.version} for Fabric ${project.minecraft_version}"
     versionType = "release"
-    uploadFile = jar
+    uploadFile = remapJar
     gameVersions = [ project.minecraft_version ]
     changelog = provider { rootProject.ext.mod_changelog }
     loaders = ["fabric"]
