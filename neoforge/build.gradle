@@ -67,6 +67,7 @@ tasks.register('publishCurseForge', net.darkhax.curseforgegradle.TaskPublishCurs
     mainFile.changelog = rootProject.ext.mod_changelog
     mainFile.addGameVersion(minecraft_version)
     mainFile.addModLoader("NeoForge")
+    mainFile.addEnvironment("Client", "Server")
 
     mainFile.addRequirement("simple-voice-chat")
 }

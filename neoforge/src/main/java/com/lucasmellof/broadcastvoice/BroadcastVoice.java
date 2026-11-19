@@ -10,7 +10,7 @@ import net.neoforged.neoforge.common.NeoForge;
 public class BroadcastVoice {
 
     public BroadcastVoice(IEventBus eventBus, ModContainer modContainer) {
-        modContainer.registerConfig(ModConfig.Type.COMMON, BroadcastVoiceConfig.GENERAL_SPEC, Constants.MOD_ID + ".toml");
+        modContainer.registerConfig(ModConfig.Type.LOCAL, BroadcastVoiceConfig.GENERAL_SPEC, Constants.MOD_ID + ".toml");
         
         Constants.LOG.info("BroadcastVoice initialized on NeoForge!");
     }
